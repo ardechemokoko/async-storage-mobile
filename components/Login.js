@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,6 +10,7 @@ const Login = ({navigation}) => {
         if(name.length > 0){
             try {
                 await AsyncStorage.setItem("myName",name)
+                setName(null)
                 navigation.navigate('Home');
             } catch (error) {
                 alert(error);
@@ -18,8 +19,22 @@ const Login = ({navigation}) => {
         else{
             alert('Le nom est obligatoire !');
         }
-
     }
+    const load = async()=>{
+       try {
+            let name = await AsyncStorage.getItem('myName');
+            if(name !== null){
+                navigation.navigate('Home');
+            }
+       } catch (error) {
+            alert(error)
+       } 
+    }
+
+    useEffect(()=>{
+        load()
+    },[]);
+
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
